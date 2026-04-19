@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hasbhi's Web Maker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --accent: #7c3aed;
+      --accent2: #a855f7;
+      --glow: #7c3aed44;
+      --text: #f0f0ff;
+      --muted: #8888aa;
+      --border: #2a2a3a;
+      --green: #22d3a0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 2.5rem;
+      background: rgba(10,10,15,.85);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.15rem;
+      letter-spacing: -.02em;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff; border: none; cursor: pointer;
+      padding: .5rem 1.25rem; border-radius: 6px;
+      font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: .875rem;
+      transition: background .2s, transform .15s;
+      text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 7rem 1.5rem 5rem;
+      position: relative;
+    }
+    .hero-blob {
+      position: absolute; width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #7c3aed33 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: pulse 5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: translate(-50%,-50%) scale(1); opacity: .7; }
+      50%      { transform: translate(-50%,-50%) scale(1.12); opacity: 1; }
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: #1a1a2a; border: 1px solid var(--border);
+      padding: .35rem .9rem; border-radius: 999px;
+      font-size: .78rem; color: var(--muted); letter-spacing: .04em;
+      margin-bottom: 1.6rem;
+      animation: fadeUp .6s ease both;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.6rem, 8vw, 5.5rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -.03em;
+      animation: fadeUp .7s .1s ease both;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, #a855f7 30%, #7c3aed);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      max-width: 520px;
+      margin: 1.4rem auto 2.4rem;
+      font-size: 1.05rem; color: var(--muted); line-height: 1.7;
+      animation: fadeUp .7s .2s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp .7s .3s ease both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff; border: none; cursor: pointer;
+      padding: .85rem 2rem; border-radius: 8px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+      box-shadow: 0 0 24px var(--glow);
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 40px #7c3aed88; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text); border: 1px solid var(--border); cursor: pointer;
+      padding: .85rem 2rem; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 1rem;
+      transition: border-color .2s, background .2s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--accent2); background: #1a1a2a; }
+
+    /* ── PRICE CHIP ── */
+    .price-chip {
+      margin-top: 2.5rem;
+      display: inline-block;
+      background: #0d1f1a;
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: .5rem 1.3rem; border-radius: 999px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+      animation: fadeUp .7s .4s ease both;
+    }
+
+    /* ── SECTION ── */
+    section { position: relative; z-index: 1; }
+    .container { max-width: 1060px; margin: 0 auto; padding: 0 1.5rem; }
+    .section-label {
+      font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent2); font-weight: 600; margin-bottom: .75rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      font-weight: 800; letter-spacing: -.02em; line-height: 1.1;
+    }
+
+    /* ── WHAT IS ── */
+    .what-is { padding: 6rem 0; }
+    .what-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+      align-items: center; margin-top: 3rem;
+    }
+    .what-text p {
+      color: var(--muted); line-height: 1.8; margin-top: 1.2rem; font-size: .97rem;
+    }
+    .what-visual {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .what-visual::before {
+      content: '';
+      position: absolute; top: -40px; right: -40px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: radial-gradient(circle, #7c3aed33 0%, transparent 70%);
+    }
+    .code-line {
+      font-family: 'Courier New', monospace;
+      font-size: .8rem; line-height: 2; color: var(--muted);
+    }
+    .code-line .kw { color: #a855f7; }
+    .code-line .str { color: var(--green); }
+    .code-line .tag { color: #f59e0b; }
+
+    /* ── FEATURES ── */
+    .features { padding: 5rem 0; }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem; margin-top: 3rem;
+    }
+    .feat-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.6rem;
+      transition: border-color .25s, transform .25s;
+    }
+    .feat-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .feat-icon {
+      font-size: 1.8rem; margin-bottom: 1rem;
+    }
+    .feat-card h3 {
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+      margin-bottom: .5rem;
+    }
+    .feat-card p { font-size: .875rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── PRICING ── */
+    .pricing { padding: 6rem 0; text-align: center; }
+    .price-card {
+      max-width: 420px; margin: 3rem auto 0;
+      background: var(--card); border: 1px solid var(--accent);
+      border-radius: 20px; padding: 2.5rem 2rem;
+      box-shadow: 0 0 40px var(--glow);
+      position: relative; overflow: hidden;
+    }
+    .price-card::before {
+      content: '⭐ TERLARIS';
+      position: absolute; top: 16px; right: -28px;
+      background: var(--accent2); color: #fff;
+      font-size: .65rem; font-weight: 700; letter-spacing: .08em;
+      padding: .3rem 2.5rem;
+      transform: rotate(35deg);
+    }
+    .price-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 3.5rem; font-weight: 800; line-height: 1;
+      margin: 1.2rem 0 .4rem;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .price-note { font-size: .85rem; color: var(--muted); margin-bottom: 1.8rem; }
+    .price-list { list-style: none; text-align: left; margin: 1.5rem 0 2rem; }
+    .price-list li {
+      display: flex; align-items: flex-start; gap: .7rem;
+      font-size: .9rem; padding: .45rem 0; color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .price-list li:last-child { border-bottom: none; }
+    .check { color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    /* ── HOW ── */
+    .how { padding: 5rem 0; }
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .step {
+      text-align: center; padding: 2rem 1.2rem;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem;
+      margin: 0 auto 1rem;
+    }
+    .step h3 { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: .5rem; }
+    .step p { font-size: .83rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── TESTIMONI ── */
+    .testimoni { padding: 6rem 0; }
+    .testi-empty {
+      margin-top: 3rem;
+      background: var(--card); border: 1px dashed var(--border);
+      border-radius: 16px; padding: 3rem 2rem;
+      text-align: center;
+    }
+    .testi-empty p { color: var(--muted); font-size: .9rem; margin-top: .5rem; }
+
+    /* ── CTA BOTTOM ── */
+    .cta-bottom {
+      padding: 6rem 0; text-align: center;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, #1a0a2e, #0f0f1a);
+      border: 1px solid var(--accent);
+      border-radius: 24px; padding: 4rem 2rem;
+      box-shadow: 0 0 60px var(--glow);
+    }
+    .cta-box h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.5rem); font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .cta-box p { color: var(--muted); max-width: 440px; margin: 0 auto 2rem; line-height: 1.7; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center; color: var(--muted); font-size: .82rem;
+    }
+    footer span { color: var(--accent2); }
+
+    /* ── ANIM ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 680px) {
+      nav { padding: 1rem 1.2rem; }
+      .what-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Hasbhi's Web Maker</div>
+  <a class="nav-cta" href="https://wa.me/6281347774444?text=Halo%20Hasbhi!%20Saya%20mau%20pesan%20jasa%20pembuatan%20website." target="_blank">Beli Sekarang!</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob"></div>
+  <div class="badge"><span class="badge-dot"></span> Jasa Pembuatan Website · Terpercaya</div>
+  <h1>Punya Website<br><span>Impianmu</span><br>Mulai Hari Ini</h1>
+  <p class="hero-sub">
+    Saya buatkan file HTML siap pakai untukmu — cepat, rapi, dan sesuai keinginan.
+    Cocok untuk portfolio, landing page, atau apapun yang kamu butuhkan.
+  </p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="https://wa.me/6281347774444?text=Halo%20Hasbhi!%20Saya%20mau%20pesan%20jasa%20pembuatan%20website." target="_blank">🛒 Beli Sekarang!</a>
+    <a class="btn-ghost" href="#apa-itu">Pelajari Lebih →</a>
+  </div>
+  <div class="price-chip">💸 Hanya Rp 20.000 / website</div>
+</section>
+
+<!-- APA ITU JASA WEBSITE -->
+<section class="what-is" id="apa-itu">
+  <div class="container">
+    <div class="section-label">Tentang Layanan</div>
+    <h2 class="section-title">Apa itu Jasa<br>Pembuatan Website?</h2>
+    <div class="what-grid">
+      <div class="what-text">
+        <p>
+          Jasa pembuatan website adalah layanan di mana kamu cukup <strong>ceritakan kebutuhanmu</strong>,
+          lalu Saya yang akan mengerjakan semua kode-nya. Kamu tidak perlu tahu HTML, CSS, atau JavaScript
+          sama sekali.
+        </p>
+        <p>
+          Saya menggunakan teknologi <strong>HTML, CSS, dan JavaScript</strong> untuk membangun tampilan
+          website yang menarik, responsif di berbagai perangkat, dan siap langsung dipakai.
+        </p>
+        <p>
+          Cocok untuk: <strong>landing page bisnis, portfolio pribadi, halaman profil, undangan online,
+          dan banyak lagi.</strong> Hasilnya berupa file <code style="background:#1a1a2a;padding:2px 6px;border-radius:4px;font-size:.85em;">.html</code> yang bisa langsung kamu gunakan.
+        </p>
+      </div>
+      <div class="what-visual">
+        <div class="code-line"><span class="tag">&lt;!DOCTYPE html&gt;</span></div>
+        <div class="code-line"><span class="tag">&lt;html&gt;</span></div>
+        <div class="code-line">&nbsp;&nbsp;<span class="tag">&lt;head&gt;</span></div>
+        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;title&gt;</span><span class="str">Website Kamu</span><span class="tag">&lt;/title&gt;</span></div>
+        <div class="code-line">&nbsp;&nbsp;<span class="tag">&lt;/head&gt;</span></div>
+        <div class="code-line">&nbsp;&nbsp;<span class="tag">&lt;body&gt;</span></div>
+        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">// ✨ Saya yang kerjain!</span></div>
+        <div class="code-line">&nbsp;&nbsp;<span class="tag">&lt;/body&gt;</span></div>
+        <div class="code-line"><span class="tag">&lt;/html&gt;</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR -->
+<section class="features">
+  <div class="container">
+    <div class="section-label">Keunggulan</div>
+    <h2 class="section-title">Kenapa Pilih Hasbhi?</h2>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <h3>Pengerjaan Cepat</h3>
+        <p>Website kamu dikerjakan dengan cepat. Tinggal kirim permintaan, Saya langsung proses.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎨</div>
+        <h3>Desain Sesuai Keinginan</h3>
+        <p>Mau tampilan simpel atau keren? Kamu cukup jelaskan, Saya yang wujudkan.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📱</div>
+        <h3>Responsif di Semua Layar</h3>
+        <p>Website yang Saya buat tampil rapi di HP, tablet, maupun laptop.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💰</div>
+        <h3>Harga Super Terjangkau</h3>
+        <p>Cuma Rp 20.000 per website. Harga paling ramah di kantong!</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📦</div>
+        <h3>File Siap Pakai</h3>
+        <p>Kamu langsung dapat file .html yang bisa dibuka di browser kapanpun.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💬</div>
+        <h3>Konsultasi via WhatsApp</h3>
+        <p>Ceritakan kebutuhanmu langsung lewat WA, Saya siap melayani dengan ramah.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HARGA -->
+<section class="pricing" id="harga">
+  <div class="container">
+    <div class="section-label">Harga</div>
+    <h2 class="section-title">Satu Harga, Semua Bisa</h2>
+    <div class="price-card">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;">Paket Website HTML</div>
+      <div class="price-amount">Rp 20K</div>
+      <div class="price-note">Per 1 file website</div>
+      <ul class="price-list">
+        <li><span class="check">✓</span> 1 File HTML siap pakai</li>
+        <li><span class="check">✓</span> Desain sesuai permintaan</li>
+        <li><span class="check">✓</span> Tampilan responsif (HP & Desktop)</li>
+        <li><span class="check">✓</span> Animasi & efek visual</li>
+        <li><span class="check">✓</span> Revisi ringan gratis</li>
+        <li><span class="check">✓</span> Pengiriman via WhatsApp</li>
+      </ul>
+      <a class="btn-primary" style="display:block;width:100%;text-align:center;" href="https://wa.me/6281347774444?text=Halo%20Hasbhi!%20Saya%20mau%20pesan%20jasa%20pembuatan%20website." target="_blank">🛒 Beli Sekarang!</a>
+    </div>
+  </div>
+</section>
+
+<!-- CARA ORDER -->
+<section class="how">
+  <div class="container">
+    <div class="section-label">Cara Pesan</div>
+    <h2 class="section-title">Mudah Banget, 4 Langkah!</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Klik Tombol Beli</h3>
+        <p>Tekan tombol "Beli Sekarang!" dan kamu akan langsung terhubung ke WhatsApp Saya.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Ceritakan Kebutuhan</h3>
+        <p>Jelaskan website seperti apa yang kamu mau — tema, warna, konten, dll.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Lakukan Pembayaran</h3>
+        <p>Transfer Rp 20.000 ke rekening yang Saya berikan. Mudah dan aman.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Terima File-mu!</h3>
+        <p>File .html langsung dikirim ke WhatsApp kamu. Selesai! 🎉</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONI -->
+<section class="testimoni" id="testimoni">
+  <div class="container">
+    <div class="section-label">Testimoni</div>
+    <h2 class="section-title">Kata Mereka 💬</h2>
+    <div class="testi-empty">
+      <div style="font-size:2.5rem;margin-bottom:.5rem">🌟</div>
+      <strong>Testimoni segera hadir!</strong>
+      <p>Saya baru membuka layanan. Jadilah yang pertama merasakan kehebatan Hasbhi's Web Maker!</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section class="cta-bottom">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Siap Punya Website Sendiri? 🚀</h2>
+      <p>Hubungi Saya sekarang dan dapatkan website impianmu hanya dengan Rp 20.000. Cepat, mudah, dan terpercaya.</p>
+      <a class="btn-primary" href="https://wa.me/6281347774444?text=Halo%20Hasbhi!%20Saya%20mau%20pesan%20jasa%20pembuatan%20website." target="_blank">💬 Chat WhatsApp Sekarang</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span>Hasbhi's Web Maker</span> — Jasa Pembuatan Website Terjangkau</p>
+  <p style="margin-top:.4rem">WhatsApp: <span>081347774444</span></p>
+</footer>
+
+</body>
+</html>
